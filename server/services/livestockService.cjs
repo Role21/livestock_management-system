@@ -1,4 +1,4 @@
-const db = require('../utils/db');
+const db = require('../utils/db.cjs');
 
 async function getAllLivestock() {
   const [rows] = await db.query('SELECT * FROM livestock');

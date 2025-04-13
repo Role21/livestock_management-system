@@ -1,4 +1,4 @@
-const db = require('../utils/db'); // Assuming you're using a MySQL pool instance
+const db = require('../utils/db.cjs'); // Assuming you're using a MySQL pool instance
 
 // Get all categories
 async function getAllCategories() {
