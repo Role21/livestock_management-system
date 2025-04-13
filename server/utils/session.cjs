@@ -1,4 +1,4 @@
-// utils/session.cjs
+const { parseCookies } = require('h3');
 const crypto = require('crypto');
 const db = require('../utils/db.cjs');
 
@@ -28,4 +28,27 @@ exports.verifyToken = async function verifyToken(token) {
 // Optional: Invalidate (logout) a token
 exports.invalidateToken = async function invalidateToken(token) {
   await db.query('DELETE FROM sessions WHERE token = ?', [token]);
+};
+
+// Get the currently authenticated user's session and info
+exports.getUserSession = async function getUserSession(event) {
+  const cookies = parseCookies(event);
+  const token = cookies?.token;
+
+  if (!token) return null;
+
+  const session = await exports.verifyToken(token);
+  if (!session) return null;
+
+  const [users] = await db.query('SELECT id, name, email, role FROM users WHERE id = ?', [session.user_id]);
+  const user = users[0];
+
+  if (!user) return null;
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role
+  };
 };
