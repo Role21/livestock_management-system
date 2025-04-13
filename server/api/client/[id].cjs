@@ -1,5 +1,6 @@
 const { defineEventHandler, getRouterParam, readBody } = require('h3');
 const clientService = require('../../services/clientService.cjs');
+const { db } = require('@/utils/db.cjs');
 
 module.exports = defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id');

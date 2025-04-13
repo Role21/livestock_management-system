@@ -1,4 +1,5 @@
 const livestockService = require('../../services/livestockService.cjs');
+const { db } = require('@/utils/db.cjs');
 
 export default defineEventHandler(async (event) => {
   const method = event.req.method;

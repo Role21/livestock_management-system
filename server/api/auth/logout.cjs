@@ -1,4 +1,5 @@
 const { defineEventHandler, setCookie } = require('h3');
+const { db } = require('@/utils/db.cjs');
 
 module.exports = defineEventHandler(async (event) => {
   // Clear the auth cookie

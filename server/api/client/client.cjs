@@ -1,5 +1,6 @@
 import { defineEventHandler, readBody } from 'h3'
 import * as clientService from '../../services/clientService.cjs'
+const { db } = require('@/utils/db.cjs');
 
 export default defineEventHandler(async (event) => {
   const { method } = event.node.req

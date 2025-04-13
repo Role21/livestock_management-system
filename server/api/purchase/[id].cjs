@@ -1,5 +1,6 @@
 // server/api/vaccinations/vaccinationpurchase/[id].cjs
 
+const { db } = require('@/utils/db.cjs');
 const { defineEventHandler, getRouterParam } = require('h3');
 const purchaseService = require('../../services/vaccinationService.cjs');
 

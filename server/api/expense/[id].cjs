@@ -1,5 +1,6 @@
 const { defineEventHandler, getMethod, readBody, setResponseStatus } = require('h3');
 const expenseService = require('../../services/expenseService.cjs');
+const { db } = require('@/utils/db.cjs');
 
 module.exports = defineEventHandler(async (event) => {
   const method = getMethod(event);

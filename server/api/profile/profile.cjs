@@ -1,6 +1,7 @@
 const { defineEventHandler, createError, sendError } = require('h3')
 const profileService = require('../../../services/profileService.cjs')
-const { getUserSession } = require('../../../utils/session.cjs') // your session util
+const { getUserSession } = require('../../../utils/session.cjs')
+const { db } = require('@/utils/db.cjs'); // your session util
 
 module.exports = defineEventHandler(async (event) => {
   const method = event.node.req.method

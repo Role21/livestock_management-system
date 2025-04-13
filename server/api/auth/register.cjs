@@ -2,6 +2,7 @@ const { defineEventHandler, readBody } = require('h3');
 const bcrypt = require('bcryptjs');
 const db = require('../../utils/db.cjs');
 
+
 module.exports = defineEventHandler(async (event) => {
   const { name, email, password } = await readBody(event);
 

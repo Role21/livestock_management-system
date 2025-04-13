@@ -1,4 +1,4 @@
-const { Category } = require('@/utils/db.js');  // Adjust the import path to your actual model
+const { Category } = require('@/utils/db.cjs');  // Adjust the import path to your actual model
 
 // GET a specific category by ID
 exports.get = async (req, res) => {

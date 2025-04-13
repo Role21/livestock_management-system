@@ -1,4 +1,4 @@
-const { db } = require('@/utils/db.js');
+const { db } = require('@/utils/db.cjs');
 const foodService = require('@/services/foodService.cjs');
 
 // GET all food items

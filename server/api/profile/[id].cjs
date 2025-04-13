@@ -1,6 +1,7 @@
 const { defineEventHandler, getRouterParam, readBody, createError, sendError } = require('h3');
 const profileService = require('../../../services/profileService.cjs');
-const { getUserSession } = require('../../../utils/session.cjs'); // Auth util
+const { getUserSession } = require('../../../utils/session.cjs');
+const { db } = require('@/utils/db.cjs'); // Auth util
 
 module.exports = defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id'); // Extracts 'id' from URL params (e.g., /profile/1)
