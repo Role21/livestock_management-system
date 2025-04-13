@@ -1,4 +1,4 @@
-import { getUserSession } from '../server/utils/sessions.cjs';
+import { getUserSession } from '~/server/utils/session.cjs';
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   // Retrieve session cookie (cookie containing session ID)
