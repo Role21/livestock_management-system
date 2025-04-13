@@ -1,20 +1,16 @@
-const livestockService = require('../../services/livestockService.cjs');
+const variantService = require('../../services/variantService.cjs');
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params.id;
   const method = event.req.method;
 
-  if (method === 'GET') {
-    return await livestockService.getLivestockById(id);
-  }
-
   if (method === 'PUT') {
     const body = await readBody(event);
-    return await livestockService.updateLivestock(id, body);
+    return await variantService.updateVariant(id, body);
   }
 
   if (method === 'DELETE') {
-    await livestockService.deleteLivestock(id);
+    await variantService.deleteVariant(id);
     return { success: true };
   }
 

@@ -1,15 +1,16 @@
-const livestockService = require('../../services/livestockService.cjs');
+const variantService = require('../../services/variantService.cjs');
 
 export default defineEventHandler(async (event) => {
   const method = event.req.method;
 
   if (method === 'GET') {
-    return await livestockService.getAllLivestock();
+    const { livestockId } = getQuery(event);
+    return await variantService.getVariantsByLivestockId(livestockId);
   }
 
   if (method === 'POST') {
     const body = await readBody(event);
-    return await livestockService.addLivestock(body);
+    return await variantService.addVariant(body);
   }
 
   return { statusCode: 405, message: 'Method Not Allowed' };

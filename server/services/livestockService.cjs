@@ -1,33 +1,48 @@
-const { Livestock, Variant } = require('../models'); // Adjust the import if you're using Sequelize models
+const db = require('../utils/db');
+
+async function getAllLivestock() {
+  const [rows] = await db.query('SELECT * FROM livestock');
+  for (const livestock of rows) {
+    const [variants] = await db.query('SELECT * FROM variant WHERE livestockId = ?', [livestock.id]);
+    livestock.variants = variants;
+  }
+  return rows;
+}
+
+async function getLivestockById(id) {
+  const [[livestock]] = await db.query('SELECT * FROM livestock WHERE id = ?', [id]);
+  if (!livestock) return null;
+  const [variants] = await db.query('SELECT * FROM variant WHERE livestockId = ?', [id]);
+  livestock.variants = variants;
+  return livestock;
+}
+
+async function addLivestock(data) {
+  const { name, description } = data;
+  const [result] = await db.query(
+    'INSERT INTO livestock (name, description) VALUES (?, ?)',
+    [name, description]
+  );
+  return { id: result.insertId, ...data };
+}
+
+async function updateLivestock(id, data) {
+  const { name, description } = data;
+  await db.query(
+    'UPDATE livestock SET name = ?, description = ? WHERE id = ?',
+    [name, description, id]
+  );
+  return { id, ...data };
+}
+
+async function deleteLivestock(id) {
+  await db.query('DELETE FROM livestock WHERE id = ?', [id]);
+}
 
 module.exports = {
-  async getAllLivestock() {
-    return await Livestock.findAll({
-      include: [{ model: Variant }],
-      order: [['createdAt', 'DESC']]
-    });
-  },
-
-  async getLivestockById(id) {
-    return await Livestock.findByPk(id, {
-      include: [{ model: Variant }]
-    });
-  },
-
-  async createLivestock(data) {
-    return await Livestock.create(data);
-  },
-
-  async updateLivestock(id, data) {
-    const livestock = await Livestock.findByPk(id);
-    if (!livestock) throw new Error('Livestock not found');
-    return await livestock.update(data);
-  },
-
-  async deleteLivestock(id) {
-    const livestock = await Livestock.findByPk(id);
-    if (!livestock) throw new Error('Livestock not found');
-    await Variant.destroy({ where: { livestockId: id } }); // cleanup
-    return await livestock.destroy();
-  }
+  getAllLivestock,
+  getLivestockById,
+  addLivestock,
+  updateLivestock,
+  deleteLivestock
 };

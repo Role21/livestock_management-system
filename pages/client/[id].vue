@@ -39,7 +39,7 @@ const route = useRoute()
 const clientId = route.params.id
 const defaultImage = '/default-avatar.png' // Place a placeholder image in public/ folder
 
-const { data: client, pending, error } = await useFetch(`/api/clients/${clientId}`, {
+const { data: client, pending, error } = await useFetch(`/api/client/client/${clientId}`, {
   key: `client-${clientId}`,
 })
 </script>

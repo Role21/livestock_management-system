@@ -1,5 +1,8 @@
 <template>
   <div class="p-6">
+    <!-- Loading Indicator -->
+    <div v-if="isLoading" class="text-center">Loading...</div>
+    
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-2xl font-bold">Expense Categories</h1>
       <button
@@ -10,7 +13,8 @@
       </button>
     </div>
 
-    <table class="w-full border-collapse border border-gray-300">
+    <!-- Categories Table -->
+    <table v-if="!isLoading" class="w-full border-collapse border border-gray-300">
       <thead>
         <tr class="bg-gray-100">
           <th class="border px-4 py-2">SL. No.</th>
@@ -46,7 +50,7 @@
       </tbody>
     </table>
 
-    <!-- Add Category Modal -->
+    <!-- Add Modal -->
     <BaseModal v-if="isAddModalOpen" @close="isAddModalOpen = false">
       <template #header>Add New Category</template>
       <template #body>
@@ -71,7 +75,7 @@
       </template>
     </BaseModal>
 
-    <!-- Edit Category Modal -->
+    <!-- Edit Modal -->
     <BaseModal v-if="isEditModalOpen" @close="isEditModalOpen = false">
       <template #header>Edit Category</template>
       <template #body>
@@ -99,50 +103,76 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useFetch } from '#app'
+
+const isLoading = ref(false)  // Loading state
 const isAddModalOpen = ref(false)
 const isEditModalOpen = ref(false)
 
-const categories = ref([
-  { id: 1, name: 'AdminExpense', description: 'Admin related costs' },
-  { id: 2, name: 'Transport', description: 'Transportation costs' },
-])
+const categories = ref([])
+const form = ref({ name: '', description: '' })
+const editForm = ref({ id: null, name: '', description: '' })
 
-const form = ref({
-  name: '',
-  description: '',
-})
-
-const editForm = ref({
-  id: null,
-  name: '',
-  description: '',
-})
-
-const addCategory = () => {
-  const newCategory = {
-    id: Date.now(),
-    name: form.value.name,
-    description: form.value.description,
+// Fetch categories with loading state
+const fetchCategories = async () => {
+  isLoading.value = true;
+  const { data, error } = await useFetch('/api/category/category')  // Updated endpoint
+  if (data.value) {
+    categories.value = data.value
+  } else {
+    console.error('Failed to fetch categories:', error.value)
   }
-  categories.value.push(newCategory)
-  isAddModalOpen.value = false
-  form.value = { name: '', description: '' }
+  isLoading.value = false;
 }
 
+onMounted(fetchCategories)
+
+// Add new category
+const addCategory = async () => {
+  isLoading.value = true;
+
+  const res = await $fetch('/api/category/category', {
+    method: 'POST',
+    body: form.value,
+  })
+  categories.value.push(res)
+  isAddModalOpen.value = false
+  form.value = { name: '', description: '' }
+
+  isLoading.value = false;
+}
+
+// Open edit modal
 const openEditModal = (category) => {
   editForm.value = { ...category }
   isEditModalOpen.value = true
 }
 
-const updateCategory = () => {
+// Update existing category
+const updateCategory = async () => {
+  isLoading.value = true;
+
+  await $fetch(`/api/category/category/${editForm.value.id}`, {  // Updated endpoint
+    method: 'PUT',
+    body: editForm.value,
+  })
   const index = categories.value.findIndex(c => c.id === editForm.value.id)
-  if (index !== -1) {
-    categories.value[index] = { ...editForm.value }
-  }
+  if (index !== -1) categories.value[index] = { ...editForm.value }
   isEditModalOpen.value = false
+
+  isLoading.value = false;
 }
 
-const deleteCategory = (id) => {
+// Delete a category
+const deleteCategory = async (id) => {
+  isLoading.value = true;
+
+  await $fetch(`/api/category/category/${id}`, {  // Updated endpoint
+    method: 'DELETE',
+  })
   categories.value = categories.value.filter(c => c.id !== id)
+
+  isLoading.value = false;
 }
 </script>
